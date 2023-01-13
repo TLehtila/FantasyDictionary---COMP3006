@@ -4,6 +4,8 @@ let vowels = ['a', 'e', 'i', 'o', 'u', 'y'];
 
 //https://www3.nd.edu/~busiforc/handouts/cryptography/letterfrequencies.html
 
+//consonant frequencies in the English language
+//fudged a bit for easier, more even numbers
 let consonantValues = {     //adds up to 60
     b: 2.0, 
     c: 4.5, 
@@ -27,6 +29,8 @@ let consonantValues = {     //adds up to 60
     z: 0.2
 };
 
+//vowel frequencies in the English language
+//fudged a bit for easier, more even numbers
 let vowelValues = {         //adds up to 40
     a: 8.5,
     e: 11.2,
@@ -36,8 +40,10 @@ let vowelValues = {         //adds up to 40
     y: 1.8
 };
 
+//averate word length in the English language is 4.7, but longer average creates more fun words
 let averageWordLength = 8;
 
+//runs through the word creation loop until the word is determined to end
 function createWord() {
     let word = "";
     let wordEnd = false;
@@ -45,9 +51,9 @@ function createWord() {
     while(!wordEnd) {
         let vowel = determineType(word);
         if(vowel == true) {
-            word += addVowel(word);
+            word += addVowel();
         } else {
-            word += addConsonant(word);
+            word += addConsonant();
         }
 
         wordEnd = checkEnd(word);
@@ -56,16 +62,17 @@ function createWord() {
     return word;
 }
 
+//determines if next letter will be a vowel or consonant, returning true for vowel, false for consonant.
 function determineType(word) {
-
-    if(word.length < 3) {
+    if(word.length < 2) {               //if 1 or 0 letters, use random type
             let type = Math.random() * 100; 
             if(type < 60) {
                 return false;
             } else {
                 return true;
             }
-    } else {
+    } else { 
+        //check the last two letters
         let vowel1 = false;
         let vowel2 = false;
 
@@ -78,6 +85,7 @@ function determineType(word) {
             }
         }
 
+        //if there is two vowels or two consonants in a row, use the other type. Otherwise use random.
         if(vowel1 && vowel2) {
             return false;
         } else if(!vowel1 && !vowel2) {
@@ -93,7 +101,8 @@ function determineType(word) {
     }
 }
 
-function addVowel(word) {
+//determine which vowel to add. Returns the letter.
+function addVowel() {
     let value = Math.random() * 40
     let currentValue = 0;
     for(let i = 0; i < vowels.length; i++) {
@@ -104,7 +113,8 @@ function addVowel(word) {
     }
 }
 
-function addConsonant(word) {
+//determine which consonant to add. Returns the letter.
+function addConsonant() {
     let value = Math.random() * 60
     let currentValue = 0;
     for(let i = 0; i < consonants.length; i++) {
@@ -115,17 +125,18 @@ function addConsonant(word) {
     }
 }
 
+//check if the word should end. 
 function checkEnd(word) {
-    let endChance = word.length / (2 * averageWordLength);
+    let endChance = word.length / (2 * averageWordLength);      //this is a nonsense calculation I came up with
     let randomChance = Math.random(101);
 
+    //discourage too small words, only 1% should be under 3 letters
+    //this lowers the chance of repeptitive words being generated
     if(word.length < 3) {
         if(randomChance > 1) {
             return false;
         }
-    }
-
-    if(endChance > randomChance) {
+    } else if(endChance > randomChance) {
         return true;
     }
 

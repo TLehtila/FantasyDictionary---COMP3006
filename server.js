@@ -13,7 +13,7 @@ app.get("/word", function(request, response) {
 });
 
 app.get("/create", function(request, response) {
-    createDictionary();
+    response.send(createDictionary());
 });
 
 
