@@ -36,7 +36,7 @@ let vowelValues = {         //adds up to 40
     y: 1.8
 };
 
-let averageWordLength = 5;
+let averageWordLength = 8;
 
 function createWord() {
     let word = "";
@@ -45,10 +45,11 @@ function createWord() {
     while(!wordEnd) {
         let vowel = determineType(word);
         if(vowel == true) {
-            word = addVowel(word);
+            word += addVowel(word);
         } else {
-            word = addConsonant(word);
+            word += addConsonant(word);
         }
+
         wordEnd = checkEnd(word);
     }
 
@@ -93,25 +94,23 @@ function determineType(word) {
 }
 
 function addVowel(word) {
-    let value = Math.random() * 41
+    let value = Math.random() * 40
     let currentValue = 0;
     for(let i = 0; i < vowels.length; i++) {
         currentValue += vowelValues[vowels[i]];
         if(currentValue >= value) {
-            word += vowels[i];
-            return word;
+            return vowels[i];
         }
     }
 }
 
 function addConsonant(word) {
-    let value = Math.random() * 61
+    let value = Math.random() * 60
     let currentValue = 0;
     for(let i = 0; i < consonants.length; i++) {
         currentValue += consonantValues[consonants[i]];
         if(currentValue >= value) {
-            word += consonants[i];
-            return word;
+            return consonants[i];
         }
     }
 }
@@ -120,14 +119,14 @@ function checkEnd(word) {
     let endChance = word.length / (2 * averageWordLength);
     let randomChance = Math.random(101);
 
-    if(endChance > randomChance) {
-        return true;
-    }
-
-    if(word.length == 1) {
-        if(randomChance > 5) {
+    if(word.length < 3) {
+        if(randomChance > 1) {
             return false;
         }
+    }
+
+    if(endChance > randomChance) {
+        return true;
     }
 
     return false;
