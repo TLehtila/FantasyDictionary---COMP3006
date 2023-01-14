@@ -1,5 +1,11 @@
 let mongoose = require("mongoose");
 
+let wordSchema = new mongoose.Schema({
+    english: String, 
+    nonsense: String
+});
+
+/*
 let letterSchema = new mongoose.Schema({
     a: [
         {english: String, nonsense: String}
@@ -80,7 +86,11 @@ let letterSchema = new mongoose.Schema({
         {english: String, nonsense: String}
     ]
 });
+*/
 
-let Letter = mongoose.model("letter", letterSchema);
 
-module.exports.Letter = Letter;
+let Word = mongoose.model("word", wordSchema);
+//let Letter = mongoose.model("letter", letterSchema);
+
+module.exports.Word = Word;
+//module.exports.Letter = Letter;
