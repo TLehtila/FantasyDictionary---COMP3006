@@ -5,7 +5,6 @@ let mongoose = require("mongoose");
 let url = "mongodb://localhost:27017/dictionary";
 
 let createWord = require("./createWord").createWord;
-//let Word = require("./letterSchema").Word;
 
 let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
@@ -19,7 +18,6 @@ async function createDictionary() {
     for(let i = 0; i < words.length; i++) {
         let nonsense = createWord();
         let english = words[i];
-        //console.log("english: " + english + " - nonsense: " + nonsense);
         nonsenseDictionary[english] = nonsense;
     }
 
@@ -34,18 +32,14 @@ async function createDictionary() {
 
     mongoose.connection.close();
     
-    //let inserted = Word.collection.insertMany(nonsenseDictionary["word"]);
-    //console.log(inserted + " inserted");
     return nonsenseDictionary;
 }
 
 function createDocument(nonsenseDictionary, words, alphabetIndex) {
     let document = "{ ";
     for(let i = 0; i < words.length; i++) {
-        let word = words[i];
         if(words[i].charAt(0) == alphabet[alphabetIndex]) {
-            //document += "\"english\": \"" + word + "\", \"nonsense\": \"" + nonsenseDictionary[word] + "\", ";
-            document += "\"" + word + "\": \"" + nonsenseDictionary[word] + "\", ";
+            document += "\"" + words[i] + "\": \"" + nonsenseDictionary[words[i]] + "\", ";
         }
     }
 
