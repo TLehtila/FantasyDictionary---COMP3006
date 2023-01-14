@@ -1,5 +1,4 @@
 let wordlist = require("wordlist-english");
-let http = require("http");
 let mongoose = require("mongoose");
 
 let url = "mongodb://localhost:27017/dictionary";
@@ -31,8 +30,6 @@ async function createDictionary() {
     }
 
     mongoose.connection.close();
-    
-    return nonsenseDictionary;
 }
 
 function createDocument(nonsenseDictionary, words, alphabetIndex) {
@@ -48,7 +45,6 @@ function createDocument(nonsenseDictionary, words, alphabetIndex) {
     }
     document += " }";
 
-    console.log(document);
     return document;
 }
 
