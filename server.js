@@ -2,6 +2,7 @@ let express = require("express");
 let path = require("path");
 let http = require("http");
 let socketIo = require("socket.io");
+let mongoose = require("mongoose");
 
 let createWord = require("./createWord").createWord;
 let createDictionary = require("./createDictionary").createDictionary;
@@ -41,6 +42,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 */
 
+mongoose.set('strictQuery', false);
 
 /*
 let io = socketIo(server, {
