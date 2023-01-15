@@ -3,6 +3,8 @@ let path = require("path");
 let http = require("http");
 //let socketIo = require("socket.io");
 let mongoose = require("mongoose");
+let MongoClient = require("mongodb").MongoClient;
+let ObjectId = require('mongodb').ObjectId;
 
 let url = "mongodb://localhost:27017/dictionary";
 
@@ -46,6 +48,8 @@ if (process.env.NODE_ENV === 'development') {
 
 mongoose.set('strictQuery', false);
 
+
+    
 /*
 let io = socketIo(server, {
     cors: {
@@ -68,6 +72,28 @@ app.get("/viewDictionary", function(request, response) {
     response.render("dictionaryView");
 });
 
+app.get("/letter_*", async function(request, response) {
+    letterAddress = request.originalUrl.substring(1, request.originalUrl.length);
+    const client = new MongoClient(url);
+    try{
+        const database = client.db("dictionary");
+        const dictionary = database.collection("dictionary");
+
+        let query = "\"_id\" : \"" + letterAddress + "\"";
+        console.log(query);
+
+        const words = await dictionary.find({ }).toArray();
+        console.log(words.length);
+        
+        response.render("dictionaryView");
+
+    } catch(error) {
+        console.log(error);
+    } finally {
+        await client.close();
+    }
+});
+
 
 io.on('connection', function(socket) {
     console.log("Client connected:  ${socket.id}");
@@ -77,13 +103,6 @@ app.get("/word", function(request, response) {
     let word = createWord();
     response.send(word);
 });
-
-/*
-app.get("/create", function(request, response) {
-    response.send(createDictionary());
-    io.emit("creation done!");
-});
-*/
 
 server.listen(port, function() {
     console.log("server listening on port " + port);
