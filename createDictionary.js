@@ -8,12 +8,12 @@ let createWord = require("./createWord").createWord;
 let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
 async function createDictionary() {
+    //10% most used english words
     let words = wordlist['english/10'];
-
-    console.log(words.length);
 
     let nonsenseDictionary = {};
 
+    //create a nonsense word list, assign one to each english word
     for(let i = 0; i < words.length; i++) {
         let nonsense = createWord();
         let english = words[i];
@@ -33,8 +33,10 @@ async function createDictionary() {
 }
 
 function createDocument(nonsenseDictionary, words, alphabetIndex) {
-    let document = "{ ";
+    //start the json and set the id field to "letter_<letter>"
+    let document = "{ \"_id\": \"letter_" + alphabet[alphabetIndex] + "\", ";
     for(let i = 0; i < words.length; i++) {
+        //go through the english wordlist, take the words starting with current letter
         if(words[i].charAt(0) == alphabet[alphabetIndex]) {
             document += "\"" + words[i] + "\": \"" + nonsenseDictionary[words[i]] + "\", ";
         }
@@ -43,6 +45,7 @@ function createDocument(nonsenseDictionary, words, alphabetIndex) {
     if(document.length > 2) {
         document = document.substring(0, document.length - 2);      //remove last ", "
     }
+    //end the json
     document += " }";
 
     return document;

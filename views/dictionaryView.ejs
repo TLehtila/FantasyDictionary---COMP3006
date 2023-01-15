@@ -2,11 +2,60 @@
     <head>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://cdn.socket.io/4.5.4/socket.io.min.js" integrity="sha384-/KNQL8Nu5gCHLqwqfQjA689Hhoqgi2S84SNUxC3roTe4EhJ9AfLkp8QiQcU8AMzI" crossorigin="anonymous"></script>
-    
+        <style>
+            .letter {
+                float: left;
+                padding: 1vw;
+            }
+        </style>
+        
+        <script>
+            let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+
+            $(function() {
+
+                $(".letter").click(function() {
+                    let letter = $(this).text();
+                    window.location("/" + letter);
+                });
+
+
+            }); 
+
+
+        </script>
     </head>
     <body>
         <h1>Welcome to Fantasy Dictionary!</h1>
-        <p>Here you can create an English - Nonsense dictionary.</p>
-        <button id="createDictionary">Create a Dictionary!</button>
+        <p>Here is your English - Nonsense dictionary.</p>
+        <div class="letters">
+            <div class="letter">a</div>
+            <div class="letter">b</div>
+            <div class="letter">c</div>
+            <div class="letter">d</div>
+            <div class="letter">e</div>
+            <div class="letter">f</div>
+            <div class="letter">g</div>
+            <div class="letter">h</div>
+            <div class="letter">i</div>
+            <div class="letter">j</div>
+            <div class="letter">k</div>
+            <div class="letter">l</div>
+            <div class="letter">m</div>
+            <div class="letter">n</div>
+            <div class="letter">o</div>
+            <div class="letter">p</div>
+            <div class="letter">q</div>
+            <div class="letter">r</div>
+            <div class="letter">s</div>
+            <div class="letter">t</div>
+            <div class="letter">u</div>
+            <div class="letter">v</div>
+            <div class="letter">w</div>
+            <div class="letter">x</div>
+            <div class="letter">y</div>
+            <div class="letter">z</div>
+        </div>
+        <p id="words"></p>
     </body>
 </html>

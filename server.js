@@ -1,8 +1,10 @@
 let express = require("express");
 let path = require("path");
 let http = require("http");
-let socketIo = require("socket.io");
+//let socketIo = require("socket.io");
 let mongoose = require("mongoose");
+
+let url = "mongodb://localhost:27017/dictionary";
 
 let createWord = require("./createWord").createWord;
 let createDictionary = require("./createDictionary").createDictionary;
@@ -57,6 +59,15 @@ app.get("/", function(request, response) {
     response.render("fantasyDictionary");
 });
 
+app.get("/viewDictionary", function(request, response) {
+    try {
+        //createDictionary();
+    } catch(error) {
+
+    }
+    response.render("dictionaryView");
+});
+
 
 io.on('connection', function(socket) {
     console.log("Client connected:  ${socket.id}");
@@ -67,11 +78,12 @@ app.get("/word", function(request, response) {
     response.send(word);
 });
 
+/*
 app.get("/create", function(request, response) {
     response.send(createDictionary());
     io.emit("creation done!");
 });
-
+*/
 
 server.listen(port, function() {
     console.log("server listening on port " + port);
