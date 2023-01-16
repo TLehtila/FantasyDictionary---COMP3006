@@ -67,15 +67,27 @@ app.get("/", function(request, response) {
 });
 
 app.get("/viewDictionary", async function(request, response) {
+    
+    createDictionary();
+    
+    response.render("dictionaryView", {
+        words: { }
+    });
+    //trying to check if a dictionary already exists, doesn't work
+    /*
     const client = new MongoClient(url);
 
     try {
         const database = client.db("dictionary");
         const dictionary = database.collection("dictionary");
+        
         dictionary.count(function (err, count) {
+            console.log(count);
+            
             if (!err && count === 0) {
                 createDictionary();
             }
+            
         });
         response.render("dictionaryView", {
             words: { }
@@ -86,6 +98,8 @@ app.get("/viewDictionary", async function(request, response) {
     } finally {
         await client.close();
     }
+
+    */
 });
 
 app.get("/letter_*", async function(request, response) {

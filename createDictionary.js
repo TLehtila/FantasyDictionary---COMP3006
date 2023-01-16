@@ -10,7 +10,7 @@ let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
 async function createDictionary() {
     //10% most used english words
     let words = wordlist['english/10'];
-
+    console.log(words.size);
     let nonsenseDictionary = {};
 
     //create a nonsense word list, assign one to each english word
