@@ -18,6 +18,7 @@ let server = http.createServer(app);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
 //https://stackoverflow.com/a/64730022
 const options = { 
@@ -48,7 +49,6 @@ if (process.env.NODE_ENV === 'development') {
 
 mongoose.set('strictQuery', false);
 
-
     
 /*
 let io = socketIo(server, {
@@ -58,34 +58,59 @@ let io = socketIo(server, {
 });
 */
 
+io.on('connection', function(socket) {
+    console.log("Client connected:  ${socket.id}");
+});
 
 app.get("/", function(request, response) {
     response.render("fantasyDictionary");
 });
 
-app.get("/viewDictionary", function(request, response) {
-    try {
-        //createDictionary();
-    } catch(error) {
+app.get("/viewDictionary", async function(request, response) {
+    const client = new MongoClient(url);
 
+    try {
+        const database = client.db("dictionary");
+        const dictionary = database.collection("dictionary");
+        dictionary.count(function (err, count) {
+            if (!err && count === 0) {
+                createDictionary();
+            }
+        });
+        response.render("dictionaryView", {
+            words: { }
+        });
+
+    } catch(error) {
+        console.log(error);
+    } finally {
+        await client.close();
     }
-    response.render("dictionaryView");
 });
 
 app.get("/letter_*", async function(request, response) {
-    letterAddress = request.originalUrl.substring(1, request.originalUrl.length);
+    let letterAddress = request.originalUrl.substring(1, request.originalUrl.length);
+    
+    let letterNumber = 0;
+
+    for(let i = 0; i < alphabet.length; i++) {
+        if(alphabet[i] === letterAddress.substring(letterAddress.length - 1, letterAddress.length)) {
+            break;
+        }
+        letterNumber++;
+    }
+
     const client = new MongoClient(url);
-    try{
+    
+    try {
         const database = client.db("dictionary");
         const dictionary = database.collection("dictionary");
 
-        let query = "\"_id\" : \"" + letterAddress + "\"";
-        console.log(query);
-
         const words = await dictionary.find({ }).toArray();
-        console.log(words.length);
-        
-        response.render("dictionaryView");
+
+        response.render("dictionaryView", {
+            words: words[letterNumber]
+        });
 
     } catch(error) {
         console.log(error);
@@ -95,9 +120,6 @@ app.get("/letter_*", async function(request, response) {
 });
 
 
-io.on('connection', function(socket) {
-    console.log("Client connected:  ${socket.id}");
-});
 
 app.get("/word", function(request, response) {
     let word = createWord();

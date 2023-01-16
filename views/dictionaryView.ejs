@@ -3,9 +3,16 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://cdn.socket.io/4.5.4/socket.io.min.js" integrity="sha384-/KNQL8Nu5gCHLqwqfQjA689Hhoqgi2S84SNUxC3roTe4EhJ9AfLkp8QiQcU8AMzI" crossorigin="anonymous"></script>
         <style>
+            body {
+                float: left;
+            }
             .letter {
                 float: left;
                 padding: 1vw;
+            }
+
+            #wordlist {
+                float: left;
             }
         </style>
         
@@ -28,6 +35,7 @@
     <body>
         <h1>Welcome to Fantasy Dictionary!</h1>
         <p>Here is your English - Nonsense dictionary.</p>
+        <p class="disclaimer">Disclaimer: The generation of this dictionary has in no way been monitored for inappropriate words. Use at your own risk!</p>
         <div class="letters">
             <div class="letter">a</div>
             <div class="letter">b</div>
@@ -56,6 +64,13 @@
             <div class="letter">y</div>
             <div class="letter">z</div>
         </div>
-        <p id="words"></p>
+        <br>
+        <ul id="wordlist">
+            <% Object.keys(words).forEach(function(key) { %>
+                <li>
+                    <%= key + " - " + words[key] %>
+                </li>
+            <% }); %>
+        </ul>
     </body>
 </html>
