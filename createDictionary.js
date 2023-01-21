@@ -23,14 +23,19 @@ async function createDictionary() {
 
     mongoose.connect(url, {useUnifiedTopology: true, useNewUrlParser: true});
     const db = mongoose.connection;
- 
-    for(let i = 0; i < alphabet.length; i++) {
-        let document = JSON.parse(createDocument(nonsenseDictionary, words, i));
-        await db.collection("dictionary").insertOne(document);
+    if(mongoose.connection.readyState === 1) {
+        for(let i = 0; i < alphabet.length; i++) {
+            let document = JSON.parse(createDocument(nonsenseDictionary, words, i));
+            await db.collection("dictionary").insertOne(document);
+        }
+    
+        mongoose.connection.close();
+    } else {
+        console.log("mongoose connection state: " + mongoose.connection.readyState);
+        return false;
     }
-
-    mongoose.connection.close();
-}
+    return true;
+} 
 
 function createDocument(nonsenseDictionary, words, alphabetIndex) {
     //start the json and set the id field to "letter_<letter>"

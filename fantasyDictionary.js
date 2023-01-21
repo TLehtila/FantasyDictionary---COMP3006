@@ -20,5 +20,5 @@ $(function() {
 }); 
 
 function notifyUser() {
-    window.alert("dictionary created!")
+    window.alert("dictionary created!");
 }

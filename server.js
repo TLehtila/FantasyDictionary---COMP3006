@@ -1,7 +1,7 @@
 let express = require("express");
 let path = require("path");
 let http = require("http");
-//let socketIo = require("socket.io");
+let socketIo = require("socket.io");
 let mongoose = require("mongoose");
 let MongoClient = require("mongodb").MongoClient;
 let ObjectId = require('mongodb').ObjectId;
@@ -20,13 +20,16 @@ app.set("view engine", "ejs");
 
 let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
+
 //https://stackoverflow.com/a/64730022
+/*
 const options = { 
     withCredentials: true,
     transports: ["websocket"],
  };
+*/
 
- const io = require('socket.io')(server, options);
+ //const io = require('socket.io')(server, options);
 
 //https://stackoverflow.com/a/70569160
 /*
@@ -50,16 +53,16 @@ if (process.env.NODE_ENV === 'development') {
 mongoose.set('strictQuery', false);
 
     
-/*
-let io = socketIo(server, {
-    cors: {
-        origin: "file:///F:/SchoolStuff/COMP3006CW2/fantasyDictionary.html"
-    }
-});
-*/
+
+let io = socketIo(server);
+
 
 io.on('connection', function(socket) {
-    console.log("Client connected:  ${socket.id}");
+    console.log("Client connected.");
+    socket.on("dictionary created", function(message) {
+        socket.emit("creation complete", message);
+        console.log(message);
+    });
 });
 
 app.get("/", function(request, response) {
@@ -68,11 +71,17 @@ app.get("/", function(request, response) {
 
 app.get("/viewDictionary", async function(request, response) {
     
-    createDictionary();
+    let success = createDictionary();
     
-    response.render("dictionaryView", {
-        words: { }
-    });
+    if(success) {
+        response.render("dictionaryView", {
+            words: { },
+            translation: ""
+        });
+    } else {
+        response.render("fantasyDictionary");
+        console.log("trouble connecting to the database");
+    }
     //trying to check if a dictionary already exists, doesn't work
     /*
     const client = new MongoClient(url);
@@ -102,6 +111,64 @@ app.get("/viewDictionary", async function(request, response) {
     */
 });
 
+app.get("/translate*", async function(request, response) {
+    let input = request.originalUrl.substring(10, request.originalUrl.length);
+    //console.log(input);
+    
+    let inputArray = input.split("%20");        //that's a space
+
+    translate(inputArray).then(
+       function(translation) {
+        console.log(translation);
+        response.render("dictionaryView", {
+            translation: translation,
+            words: { }
+        });
+       }
+    );
+
+    
+    
+    
+});
+
+async function translate(inputArray) {
+    const client = new MongoClient(url);
+
+    let translated = "";
+    try {
+        const database = client.db("dictionary");
+        const dictionary = database.collection("dictionary");
+
+        const words = await dictionary.find({ }).toArray();
+
+
+        for(let i = 0; i < inputArray.length; i++) {
+            let letter = inputArray[i].substring(0, 1); 
+            //console.log("current word = " + inputArray[i]);
+            for(let j = 0; j < alphabet.length; j++) {
+                if(alphabet[j] === letter) {
+                    if(words[j][inputArray[i]] === undefined) {
+                        translated += inputArray[i] + " ";
+                    } else {
+                        translated += words[j][inputArray[i]] + " ";
+                    }
+                    
+                    break;
+                }
+            }
+        }
+        
+
+    } catch(error) {
+        console.log(error);
+    } finally {
+        await client.close();
+    }
+
+    return translated;
+}
+
 app.get("/letter_*", async function(request, response) {
     let letterAddress = request.originalUrl.substring(1, request.originalUrl.length);
     
@@ -123,7 +190,8 @@ app.get("/letter_*", async function(request, response) {
         const words = await dictionary.find({ }).toArray();
 
         response.render("dictionaryView", {
-            words: words[letterNumber]
+            words: words[letterNumber],
+            translation: ""
         });
 
     } catch(error) {

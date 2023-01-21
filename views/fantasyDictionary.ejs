@@ -4,22 +4,17 @@
         <script src="https://cdn.socket.io/4.5.4/socket.io.min.js" integrity="sha384-/KNQL8Nu5gCHLqwqfQjA689Hhoqgi2S84SNUxC3roTe4EhJ9AfLkp8QiQcU8AMzI" crossorigin="anonymous"></script>
        
         <script type="module">
-            const socket = io.connect("http://localhost:9000");
+            let socket = io.connect("http://localhost:9000");
 
-            function notifyUser() {
+            socket.on("creation complete", function(message) {
                 window.alert("dictionary created!")
-            }
+            });
 
             $(function() {
 
                 $("#createDictionary").click(function() {
                     console.log("clicked");
                     window.location = "/viewDictionary";
-                });
-
-                let socket = io("http://localhost:9000");
-                socket.on("received nessage", function(msg) {
-                    notifyUser();
                 });
 
 

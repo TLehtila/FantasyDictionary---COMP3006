@@ -14,6 +14,10 @@
             #wordlist {
                 float: left;
             }
+
+            ul li:first-child{
+                display: none!important;
+            }
         </style>
         
         <script>
@@ -26,6 +30,12 @@
                     window.location = "/letter_" + letter;
                 });
 
+                $("#translatebutton").click(function() {
+                    let words = $("#translatetext").val();
+                    
+                    window.location = "/translate" + words;
+                    $("#translatetext").val(words);
+                });
 
             }); 
 
@@ -36,6 +46,13 @@
         <h1>Welcome to Fantasy Dictionary!</h1>
         <p>Here is your English - Nonsense dictionary.</p>
         <p class="disclaimer">Disclaimer: The generation of this dictionary has in no way been monitored for inappropriate words. Use at your own risk!</p>
+        <div id="translate">
+            <input id="translatetext" type="text" />
+            <button id="translatebutton">Translate!</button>
+            <p id="translation">
+                <%- include ('translation.ejs') %>
+            </p>
+        </div>
         <div class="letters">
             <div class="letter">a</div>
             <div class="letter">b</div>
