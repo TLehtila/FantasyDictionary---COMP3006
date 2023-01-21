@@ -20,42 +20,9 @@ app.set("view engine", "ejs");
 
 let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
-
-//https://stackoverflow.com/a/64730022
-/*
-const options = { 
-    withCredentials: true,
-    transports: ["websocket"],
- };
-*/
-
- //const io = require('socket.io')(server, options);
-
-//https://stackoverflow.com/a/70569160
-/*
-const io = require("socket.io")(server, {
-    path: '/api/socket.io',
-});
-
-if (process.env.NODE_ENV === 'development') {
-    io.engine.on('initial_headers', (headers, req) => {
-        headers['Access-Control-Allow-Origin'] = 'http://localhost:9000';
-        headers['Access-Control-Allow-Credentials'] = true;
-    });
-
-    io.engine.on('headers', (headers, req) => {
-        headers['Access-Control-Allow-Origin'] = 'http://localhost:9000';
-        headers['Access-Control-Allow-Credentials'] = true;
-    });
-}
-*/
-
 mongoose.set('strictQuery', false);
 
-    
-
 let io = socketIo(server);
-
 
 io.on('connection', function(socket) {
     console.log("Client connected.");
@@ -76,59 +43,38 @@ app.get("/viewDictionary", async function(request, response) {
     if(success) {
         response.render("dictionaryView", {
             words: { },
-            translation: ""
+            translation: "",
+            translationMessage: ""
         });
     } else {
         response.render("fantasyDictionary");
         console.log("trouble connecting to the database");
     }
-    //trying to check if a dictionary already exists, doesn't work
-    /*
-    const client = new MongoClient(url);
-
-    try {
-        const database = client.db("dictionary");
-        const dictionary = database.collection("dictionary");
-        
-        dictionary.count(function (err, count) {
-            console.log(count);
-            
-            if (!err && count === 0) {
-                createDictionary();
-            }
-            
-        });
-        response.render("dictionaryView", {
-            words: { }
-        });
-
-    } catch(error) {
-        console.log(error);
-    } finally {
-        await client.close();
-    }
-
-    */
 });
 
 app.get("/translate*", async function(request, response) {
     let input = request.originalUrl.substring(10, request.originalUrl.length);
-    //console.log(input);
     
+    input = input.toLowerCase();
     let inputArray = input.split("%20");        //that's a space
 
+    let message = "Translation of \'";
+
+    for(let i = 0; i < inputArray.length; i++) {
+        message += inputArray[i] + " ";
+    }
+
+    message += "\' is: "
+
     translate(inputArray).then(
-       function(translation) {
-        console.log(translation);
+    function(translation) {
         response.render("dictionaryView", {
             translation: translation,
-            words: { }
+            words: { },
+            translationMessage: message
         });
-       }
+    }
     );
-
-    
-    
     
 });
 
@@ -191,7 +137,8 @@ app.get("/letter_*", async function(request, response) {
 
         response.render("dictionaryView", {
             words: words[letterNumber],
-            translation: ""
+            translation: "",
+            translationMessage: ""
         });
 
     } catch(error) {
