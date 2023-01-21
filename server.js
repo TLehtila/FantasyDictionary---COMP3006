@@ -39,6 +39,7 @@ app.get("/", function(request, response) {
 app.get("/viewDictionary", async function(request, response) {
     
     let success = createDictionary();
+    console.log(success);
     
     if(success) {
         response.render("dictionaryView", {
@@ -91,7 +92,6 @@ async function translate(inputArray) {
 
         for(let i = 0; i < inputArray.length; i++) {
             let letter = inputArray[i].substring(0, 1); 
-            //console.log("current word = " + inputArray[i]);
             for(let j = 0; j < alphabet.length; j++) {
                 if(alphabet[j] === letter) {
                     if(words[j][inputArray[i]] === undefined) {

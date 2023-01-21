@@ -21,20 +21,24 @@ async function createDictionary() {
     }
 
 
-    mongoose.connect(url, {useUnifiedTopology: true, useNewUrlParser: true});
-    const db = mongoose.connection;
-    if(mongoose.connection.readyState === 1) {
-        for(let i = 0; i < alphabet.length; i++) {
-            let document = JSON.parse(createDocument(nonsenseDictionary, words, i));
-            await db.collection("dictionary").insertOne(document);
+    mongoose.connect(url, {useUnifiedTopology: true, useNewUrlParser: true}, async function() {
+        const db = mongoose.connection;
+        console.log(mongoose.connection.readyState);
+        if(mongoose.connection.readyState === 1) {
+            for(let i = 0; i < alphabet.length; i++) {
+                let document = JSON.parse(createDocument(nonsenseDictionary, words, i));
+                await db.collection("dictionary").insertOne(document);
+            }
+        
+            mongoose.connection.close();
+        } else {
+            console.log("mongoose connection state: " + mongoose.connection.readyState);
+            return false;
         }
-    
-        mongoose.connection.close();
-    } else {
-        console.log("mongoose connection state: " + mongoose.connection.readyState);
-        return false;
-    }
-    return true;
+        return true;
+    });
+
+    return false;
 } 
 
 function createDocument(nonsenseDictionary, words, alphabetIndex) {
