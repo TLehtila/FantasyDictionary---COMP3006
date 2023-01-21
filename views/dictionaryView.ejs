@@ -24,9 +24,16 @@
             let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
             function translate() {
+                let alpharegex = /^[A-Za-z ]+$/;
                 let words = $("#translatetext").val();
+
+                if(alpharegex.test(words)) {
+                    console.log(alpharegex.test(words));
+                    window.location = "/translate" + words;
+                } else {
+                    $("#translation").html("Please use only English alphabet letters.")
+                }
                     
-                window.location = "/translate" + words;
             }
 
 
